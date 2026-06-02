@@ -1,0 +1,68 @@
+.mypage {
+  padding: 40px 20px;
+}
+
+.mypage-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.mypage-nickname {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.mypage-role {
+  font-size: 0.8rem;
+  background: #ede9fe;
+  color: var(--color-primary);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.mypage-empty {
+  color: var(--color-text-sub);
+  text-align: center;
+  padding: 40px 0;
+}
+
+.mypage-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mypage-review-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mypage-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mypage-novel-title {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 0.95rem;
+}
+
+.mypage-review-content {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--color-text);
+}

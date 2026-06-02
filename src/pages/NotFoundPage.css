@@ -1,0 +1,20 @@
+.notfound {
+  min-height: calc(100vh - var(--header-height) - 73px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.notfound-code {
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--color-primary-light);
+}
+
+.notfound-msg {
+  color: var(--color-text-sub);
+  font-size: 1.1rem;
+}

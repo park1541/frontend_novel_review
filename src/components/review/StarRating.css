@@ -1,0 +1,22 @@
+.star-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star-icon {
+  font-size: 1.4rem;
+  color: var(--color-border);
+  transition: color 0.1s;
+}
+
+.star-icon.filled {
+  color: var(--color-star);
+}
+
+.star-rating:not(.readonly) .star-icon {
+  cursor: pointer;
+}
+
+.star-rating:not(.readonly) .star-icon:hover {
+  color: var(--color-star);
+}

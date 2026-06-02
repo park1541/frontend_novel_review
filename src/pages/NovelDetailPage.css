@@ -1,0 +1,123 @@
+.novel-detail-page {
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.novel-info {
+  display: flex;
+  gap: 40px;
+}
+
+.novel-info-cover {
+  width: 200px;
+  flex-shrink: 0;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #ede9fe;
+  box-shadow: var(--shadow-md);
+}
+
+.novel-info-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.novel-info-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+}
+
+.novel-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-genre {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: #ede9fe;
+  padding: 3px 10px;
+  border-radius: 20px;
+  align-self: flex-start;
+}
+
+.detail-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.detail-author {
+  color: var(--color-text-sub);
+  font-size: 0.95rem;
+}
+
+.detail-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-rating-num {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-star);
+}
+
+.detail-review-count {
+  font-size: 0.85rem;
+  color: var(--color-text-sub);
+}
+
+.detail-synopsis {
+  font-size: 0.93rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  white-space: pre-wrap;
+  margin-top: 8px;
+}
+
+.review-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-list-wrap {
+  margin-top: 8px;
+}
+
+.review-login-prompt {
+  color: var(--color-text-sub);
+  font-size: 0.9rem;
+}
+
+.review-login-prompt a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.detail-error {
+  text-align: center;
+  padding: 60px;
+  color: var(--color-text-sub);
+}
+
+@media (max-width: 600px) {
+  .novel-info {
+    flex-direction: column;
+  }
+  .novel-info-cover {
+    width: 140px;
+  }
+}

@@ -1,0 +1,11 @@
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.review-list-empty {
+  text-align: center;
+  color: var(--color-text-sub);
+  padding: 40px 0;
+}
