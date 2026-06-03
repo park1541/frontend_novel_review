@@ -21,7 +21,7 @@ export default function ReviewCard({ review, onDelete, onEdit }) {
     <div className="review-card">
       <div className="review-card-header">
         <div>
-          <span className="review-card-nickname">{review.nickname}</span>
+          <span className="review-card-nickname">{review.authorNickname}</span>
           <span className="review-card-date">{formatDate(review.createdAt)}</span>
         </div>
         {/* 별점은 조회 전용 (readonly) */}

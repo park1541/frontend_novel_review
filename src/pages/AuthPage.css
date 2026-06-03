@@ -79,3 +79,47 @@
   color: var(--color-primary);
   font-weight: 600;
 }
+
+.auth-desc {
+  text-align: center;
+  color: var(--color-text-sub);
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.social-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-social {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-social:hover {
+  opacity: 0.85;
+}
+
+.btn-google {
+  background: #fff;
+  color: #333;
+  border: 1.5px solid #ddd;
+}
+
+.btn-naver {
+  background: #03C75A;
+  color: #fff;
+}
+
+.btn-kakao {
+  background: #FEE500;
+  color: #333;
+}

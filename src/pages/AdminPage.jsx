@@ -5,7 +5,7 @@ import { getGenres } from '../api/genreApi';
 import Spinner from '../components/common/Spinner';
 import './AdminPage.css';
 
-const EMPTY_FORM = { title: '', author: '', genreId: '', synopsis: '', coverUrl: '' };
+const EMPTY_FORM = { title: '', author: '', genreId: '', description: '', coverImageUrl: '' };
 
 export default function AdminPage() {
   const [novels, setNovels] = useState([]);
@@ -19,16 +19,16 @@ export default function AdminPage() {
   const fetchNovels = () => {
     setLoading(true);
     getNovels({ page: 0, size: 50 })
-      .then((res) => setNovels(res.data.data?.content ?? []))
+      .then((res) => setNovels(res.data?.content ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     fetchNovels();
-    getGenres().then((res) => setGenres(res.data.data ?? [])).catch(() => {});
+    getGenres().then((res) => setGenres(res.data ?? [])).catch(() => {});
   }, []);
-
+  console.log(genres);
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleEdit = (novel) => {
@@ -37,8 +37,8 @@ export default function AdminPage() {
       title: novel.title,
       author: novel.author,
       genreId: novel.genreId ?? '',
-      synopsis: novel.synopsis ?? '',
-      coverUrl: novel.coverUrl ?? '',
+      description: novel.description ?? '',
+      coverImageUrl: novel.coverImageUrl ?? '',
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -96,12 +96,12 @@ export default function AdminPage() {
           </div>
           <div className="form-group">
             <label>표지 URL</label>
-            <input name="coverUrl" value={form.coverUrl} onChange={handleChange} />
+            <input name="coverImageUrl" value={form.coverImageUrl} onChange={handleChange} />
           </div>
         </div>
         <div className="form-group">
           <label>시놉시스</label>
-          <textarea name="synopsis" value={form.synopsis} onChange={handleChange} rows={3} />
+          <textarea name="description" value={form.description} onChange={handleChange} rows={3} />
         </div>
         {error && <p className="auth-error">{error}</p>}
         <div className="admin-form-actions">

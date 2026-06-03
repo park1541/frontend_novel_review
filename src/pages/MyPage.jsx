@@ -12,7 +12,7 @@ export default function MyPage() {
 
   const fetchReviews = () => {
     getMyReviews()
-      .then((res) => setReviews(res.data.data ?? []))
+      .then((res) => setReviews(res.data?.content ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
   };

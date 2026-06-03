@@ -4,14 +4,14 @@ import './NovelCard.css';
 // 소설 목록에서 한 권을 나타내는 카드 컴포넌트
 // 클릭하면 해당 소설 상세 페이지로 이동
 export default function NovelCard({ novel }) {
-  const { id, title, author, genreName, avgRating, reviewCount, coverUrl } = novel;
+  const { id, title, author, genreName, averageRating, reviewCount, coverImageUrl } = novel;
 
   return (
     <Link to={`/novels/${id}`} className="novel-card">
       {/* 표지 이미지 (없으면 책 이모지로 대체) */}
       <div className="novel-card-cover">
-        {coverUrl ? (
-          <img src={coverUrl} alt={title} />
+        {coverImageUrl ? (
+          <img src={coverImageUrl} alt={title} />
         ) : (
           <div className="novel-card-cover-placeholder">📖</div>
         )}
@@ -28,7 +28,7 @@ export default function NovelCard({ novel }) {
         <div className="novel-card-rating">
           <span className="star">★</span>
           {/* 리뷰가 없으면 '—' 표시, 있으면 소수점 1자리 */}
-          <span>{avgRating ? Number(avgRating).toFixed(1) : '—'}</span>
+          <span>{averageRating ? Number(averageRating).toFixed(1) : '—'}</span>
           {/* ?? 0: reviewCount가 null/undefined이면 0으로 대체 */}
           <span className="novel-card-count">({reviewCount ?? 0}개 리뷰)</span>
         </div>

@@ -11,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     getNovels({ page: 0, size: 8 })
-      .then((res) => setNovels(res.data.data?.content ?? []))
+      .then((res) => setNovels(res.data?.content ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

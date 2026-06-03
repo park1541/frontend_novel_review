@@ -22,7 +22,7 @@ export default function NovelDetailPage() {
   // 소설 상세 정보 로드
   useEffect(() => {
     getNovelById(id)
-      .then((res) => setNovel(res.data.data))
+      .then((res) => setNovel(res.data))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [id]);
@@ -32,7 +32,7 @@ export default function NovelDetailPage() {
   const fetchReviews = useCallback((page = 0) => {
     getReviews(id, { page, size: 10 })
       .then((res) => {
-        const data = res.data.data;
+        const data = res.data;
         setReviewData({
           content: data?.content ?? [],
           page: data?.page ?? 0,
@@ -60,8 +60,8 @@ export default function NovelDetailPage() {
       <section className="novel-info">
         {/* 표지 이미지 (없으면 이모지 대체) */}
         <div className="novel-info-cover">
-          {novel.coverUrl ? (
-            <img src={novel.coverUrl} alt={novel.title} />
+          {novel.coverImageUrl ? (
+            <img src={novel.coverImageUrl} alt={novel.title} />
           ) : (
             <div className="novel-info-cover-placeholder">📖</div>
           )}
@@ -74,12 +74,12 @@ export default function NovelDetailPage() {
 
           {/* 평균 별점 (소수점 반올림하여 별로 표시) */}
           <div className="detail-rating">
-            <StarRating value={Math.round(novel.avgRating ?? 0)} readonly />
-            <span className="detail-rating-num">{novel.avgRating ? Number(novel.avgRating).toFixed(1) : '—'}</span>
+            <StarRating value={Math.round(novel.averageRating ?? 0)} readonly />
+            <span className="detail-rating-num">{novel.averageRating ? Number(novel.averageRating).toFixed(1) : '—'}</span>
             <span className="detail-review-count">({novel.reviewCount ?? 0}개 리뷰)</span>
           </div>
 
-          {novel.synopsis && <p className="detail-synopsis">{novel.synopsis}</p>}
+          {novel.description && <p className="detail-synopsis">{novel.description}</p>}
         </div>
       </section>
 

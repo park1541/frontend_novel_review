@@ -26,7 +26,7 @@ export default function NovelListPage() {
   // 장르 목록은 처음 한 번만 로드 (필터 버튼에 사용)
   useEffect(() => {
     getGenres()
-      .then((res) => setGenres(res.data.data ?? []))
+      .then((res) => setGenres(res.data ?? []))
       .catch(() => {});
   }, []);
 
@@ -39,7 +39,7 @@ export default function NovelListPage() {
 
     getNovels(params)
       .then((res) => {
-        const data = res.data.data;
+        const data = res.data;
         setNovels(data?.content ?? []);      // 소설 배열
         setTotalPages(data?.totalPages ?? 0); // 전체 페이지 수
       })

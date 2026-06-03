@@ -15,9 +15,9 @@ export function AuthProvider({ children }) {
   // 컴포넌트 첫 렌더링 시 쿠키로 로그인 상태 확인
   useEffect(() => {
     getMe()
-      .then((res) => setUser(res.data.data))  // 로그인 상태면 사용자 정보 저장
-      .catch(() => setUser(null))              // 401 등 오류면 비로그인 처리
-      .finally(() => setLoading(false));       // 확인 완료 → 로딩 해제
+      .then((res) => setUser(res.data))  // 로그인 상태면 사용자 정보 저장
+      .catch(() => setUser(null))        // 401 등 오류면 비로그인 처리
+      .finally(() => setLoading(false)); // 확인 완료 → 로딩 해제
   }, []);
 
   return (
