@@ -161,6 +161,29 @@
   gap: 6px;
 }
 
+/* ── 장르 폼 ── */
+.genre-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.genre-input {
+  padding: 9px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  width: 260px;
+  transition: border-color 0.15s;
+}
+
+.genre-input:focus {
+  border-color: var(--color-primary);
+}
+
 /* ── 권한 배지 ── */
 .admin-role-badge {
   padding: 3px 10px;

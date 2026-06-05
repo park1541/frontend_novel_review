@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getNovels } from '../api/novelApi';
 import axiosInstance from '../api/axiosInstance';
-import { getGenres } from '../api/genreApi';
+import { getGenres, createGenre, updateGenre, deleteGenre } from '../api/genreApi';
 import Spinner from '../components/common/Spinner';
 import './AdminPage.css';
 
@@ -10,6 +10,7 @@ const EMPTY_FORM = { title: '', author: '', genreId: '', description: '', coverI
 // 사이드바 메뉴 목록 - 추가할 때 여기에만 넣으면 됨
 const MENU_ITEMS = [
   { key: 'users',  label: '회원 목록' },
+  { key: 'genres', label: '장르 관리' },
   { key: 'manage', label: '소설 관리' },
   { key: 'list',   label: '소설 목록' },
 ];
@@ -24,6 +25,11 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  // 장르 관리 상태
+  const [genreInput, setGenreInput] = useState('');
+  const [genreEditingId, setGenreEditingId] = useState(null);
+  const [genreError, setGenreError] = useState('');
 
   const fetchNovels = () => {
     setLoading(true);
@@ -88,6 +94,44 @@ export default function AdminPage() {
     if (!window.confirm('소설을 삭제하시겠습니까?')) return;
     await axiosInstance.delete(`/novels/${id}`);
     fetchNovels();
+  };
+
+  const fetchGenres = () => {
+    getGenres().then((res) => setGenres(res.data ?? [])).catch(() => {});
+  };
+
+  const handleGenreSubmit = async (e) => {
+    e.preventDefault();
+    setGenreError('');
+    try {
+      if (genreEditingId) {
+        await updateGenre(genreEditingId, genreInput);
+      } else {
+        await createGenre(genreInput);
+      }
+      setGenreInput('');
+      setGenreEditingId(null);
+      fetchGenres();
+    } catch (err) {
+      setGenreError(err.response?.data?.message || '오류가 발생했습니다.');
+    }
+  };
+
+  const handleGenreEdit = (genre) => {
+    setGenreEditingId(genre.id);
+    setGenreInput(genre.name);
+  };
+
+  const handleGenreDelete = async (id) => {
+    if (!window.confirm('장르를 삭제하시겠습니까?')) return;
+    try {
+      await deleteGenre(id);
+      fetchGenres();
+    } catch (err) {
+      console.log('장르 삭제 에러:', err.response);
+      const msg = err.response?.data?.message || err.response?.data || '삭제 중 오류가 발생했습니다.';
+      alert(msg);
+    }
   };
 
   const formatDate = (dateStr) =>
@@ -159,6 +203,58 @@ export default function AdminPage() {
                 </tbody>
               </table>
             )}
+          </div>
+        )}
+
+        {/* 장르 관리 */}
+        {activeMenu === 'genres' && (
+          <div>
+            <h1 className="admin-content-title">장르 관리</h1>
+
+            {/* 장르 추가/수정 폼 */}
+            <form className="genre-form" onSubmit={handleGenreSubmit}>
+              <input
+                className="genre-input"
+                value={genreInput}
+                onChange={(e) => setGenreInput(e.target.value)}
+                placeholder="장르 이름 입력"
+                required
+              />
+              <button type="submit" className="btn btn-primary">
+                {genreEditingId ? '수정 완료' : '추가'}
+              </button>
+              {genreEditingId && (
+                <button type="button" className="btn btn-outline" onClick={() => { setGenreEditingId(null); setGenreInput(''); }}>
+                  취소
+                </button>
+              )}
+            </form>
+            {genreError && <p className="auth-error" style={{ marginTop: 8 }}>{genreError}</p>}
+
+            {/* 장르 목록 */}
+            <table className="admin-table" style={{ marginTop: 24 }}>
+              <thead>
+                <tr>
+                  <th>장르명</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                {genres.length === 0 ? (
+                  <tr><td colSpan={2} className="admin-table-empty">등록된 장르가 없습니다.</td></tr>
+                ) : (
+                  genres.map((g) => (
+                    <tr key={g.id}>
+                      <td>{g.name}</td>
+                      <td className="admin-table-actions">
+                        <button className="btn btn-outline btn-sm" onClick={() => handleGenreEdit(g)}>수정</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleGenreDelete(g.id)}>삭제</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         )}
 
