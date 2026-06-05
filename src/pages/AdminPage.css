@@ -1,23 +1,74 @@
-.admin-page {
-  padding: 40px 20px;
+/* ── 전체 레이아웃 ── */
+.admin-layout {
   display: flex;
-  flex-direction: column;
-  gap: 40px;
+  min-height: calc(100vh - var(--header-height) - 73px);
 }
 
+/* ── 사이드바 ── */
+.admin-sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.admin-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar-item {
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--color-text);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.admin-sidebar-item:hover {
+  background: var(--color-bg);
+}
+
+.admin-sidebar-item.active {
+  background: var(--color-bg);
+  border-left-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* ── 메인 콘텐츠 ── */
+.admin-content {
+  flex: 1;
+  padding: 24px 40px;
+  overflow-y: auto;
+}
+
+.admin-content-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 28px;
+  color: var(--color-text);
+}
+
+/* ── 소설 등록/수정 폼 ── */
 .admin-form {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 24px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.admin-form-title {
-  font-size: 1.1rem;
-  font-weight: 700;
+  gap: 18px;
+  max-width: 800px;
 }
 
 .admin-form-grid {
@@ -27,37 +78,34 @@
 }
 
 .admin-form-grid .form-group input,
-.admin-form-grid .form-group select {
+.admin-form-grid .form-group select,
+.admin-form .form-group textarea {
   width: 100%;
-  padding: 8px 12px;
+  padding: 9px 12px;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: 0.9rem;
   outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
 }
 
 .admin-form-grid .form-group input:focus,
-.admin-form-grid .form-group select:focus {
+.admin-form-grid .form-group select:focus,
+.admin-form .form-group textarea:focus {
   border-color: var(--color-primary);
 }
 
 .admin-form .form-group textarea {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-family: inherit;
-  font-size: 0.9rem;
-  resize: vertical;
-  outline: none;
+  resize: none;
 }
 
 .admin-form .form-group label {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--color-text-sub);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   display: block;
 }
 
@@ -67,6 +115,7 @@
   justify-content: flex-end;
 }
 
+/* ── 소설 목록 테이블 ── */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -79,7 +128,7 @@
 
 .admin-table th,
 .admin-table td {
-  padding: 12px 16px;
+  padding: 13px 16px;
   text-align: left;
   border-bottom: 1px solid var(--color-border);
 }
@@ -87,8 +136,10 @@
 .admin-table th {
   background: var(--color-bg);
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--color-text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .admin-table tr:last-child td {
@@ -96,10 +147,71 @@
 }
 
 .admin-table tr:hover td {
-  background: #fafaf8;
+  background: var(--color-bg);
 }
 
-@media (max-width: 700px) {
+.admin-table-empty {
+  text-align: center;
+  color: var(--color-text-sub);
+  padding: 40px !important;
+}
+
+.admin-table-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ── 권한 배지 ── */
+.admin-role-badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--color-bg);
+  color: var(--color-text-sub);
+  border: 1px solid var(--color-border);
+}
+
+.admin-role-badge.admin {
+  background: #e8f0fe;
+  color: #1a56db;
+  border-color: #a4c2f4;
+}
+
+/* ── 반응형 ── */
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    min-width: unset;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 0;
+  }
+
+  .admin-sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .admin-sidebar-item {
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+  }
+
+  .admin-sidebar-item.active {
+    border-left-color: transparent;
+    border-bottom-color: var(--color-primary);
+  }
+
+  .admin-content {
+    padding: 24px 16px;
+  }
+
   .admin-form-grid {
     grid-template-columns: 1fr;
   }
