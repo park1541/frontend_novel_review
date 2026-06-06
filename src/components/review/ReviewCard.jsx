@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { toggleReviewLike } from '../../api/reviewApi';
 import StarRating from './StarRating';
 import './ReviewCard.css';
 
@@ -8,6 +10,9 @@ import './ReviewCard.css';
 export default function ReviewCard({ review, onDelete, onEdit }) {
   const { user } = useAuth();
 
+  const [liked, setLiked] = useState(review.liked ?? false);
+  const [likeCount, setLikeCount] = useState(review.likeCount ?? 0);
+
   // 현재 로그인한 사용자가 이 리뷰의 작성자인지 확인
   const isOwner = user && user.id === review.userId;
   // 현재 로그인한 사용자가 관리자인지 확인
@@ -16,6 +21,20 @@ export default function ReviewCard({ review, onDelete, onEdit }) {
   // 날짜 문자열을 '2025년 1월 1일' 형식으로 변환
   const formatDate = (dateStr) =>
     new Date(dateStr).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const handleLike = async () => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    try {
+      const res = await toggleReviewLike(review.id);
+      setLiked(res.data.liked);
+      setLikeCount(res.data.likeCount);
+    } catch (e) {
+      // 오류 무시
+    }
+  };
 
   return (
     <div className="review-card">
@@ -30,14 +49,25 @@ export default function ReviewCard({ review, onDelete, onEdit }) {
 
       <p className="review-card-content">{review.content}</p>
 
-      {/* 본인 또는 관리자에게만 수정/삭제 버튼 표시 */}
-      {(isOwner || isAdmin) && (
-        <div className="review-card-actions">
-          {/* 수정 버튼은 본인에게만 표시 (관리자는 삭제만 가능) */}
-          {isOwner && <button className="btn btn-outline btn-sm" onClick={() => onEdit(review)}>수정</button>}
-          <button className="btn btn-danger btn-sm" onClick={() => onDelete(review.id)}>삭제</button>
-        </div>
-      )}
+      <div className="review-card-footer">
+        {/* 좋아요 버튼 */}
+        <button
+          className={`review-like-btn ${liked ? 'liked' : ''}`}
+          onClick={handleLike}
+          title={user ? '좋아요' : '로그인이 필요합니다'}
+        >
+          {liked ? '♥' : '♡'} <span className="review-like-count">{likeCount}</span>
+        </button>
+
+        {/* 본인 또는 관리자에게만 수정/삭제 버튼 표시 */}
+        {(isOwner || isAdmin) && (
+          <div className="review-card-actions">
+            {/* 수정 버튼은 본인에게만 표시 (관리자는 삭제만 가능) */}
+            {isOwner && <button className="btn btn-outline btn-sm" onClick={() => onEdit(review)}>수정</button>}
+            <button className="btn btn-danger btn-sm" onClick={() => onDelete(review.id)}>삭제</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

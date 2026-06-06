@@ -14,3 +14,6 @@ export const deleteReview = (reviewId) => axiosInstance.delete(`/reviews/${revie
 
 // 내가 작성한 리뷰 전체 조회 (마이페이지에서 사용)
 export const getMyReviews = () => axiosInstance.get('/users/me/reviews');
+
+// 리뷰 좋아요 토글 (로그인 필요 / liked, likeCount 반환)
+export const toggleReviewLike = (reviewId) => axiosInstance.post(`/reviews/${reviewId}/likes`);
