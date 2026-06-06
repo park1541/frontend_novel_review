@@ -47,6 +47,16 @@ export default function AdminPage() {
       .finally(() => setLoading(false));
   };
 
+  const handleBanUser = async (user) => {
+    if (!window.confirm(`"${user.nickname}" 회원을 추방하시겠습니까?\n해당 회원의 리뷰가 모두 삭제됩니다.`)) return;
+    try {
+      await axiosInstance.delete(`/admin/users/${user.id}`);
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || '추방 처리 중 오류가 발생했습니다.');
+    }
+  };
+
   useEffect(() => {
     fetchNovels();
     fetchUsers();
@@ -180,6 +190,7 @@ export default function AdminPage() {
                     <th>로그인</th>
                     <th>권한</th>
                     <th>가입일</th>
+                    <th>관리</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -197,6 +208,11 @@ export default function AdminPage() {
                           </span>
                         </td>
                         <td>{formatDate(u.createdAt)}</td>
+                        <td className="admin-table-actions">
+                          {u.role !== 'ADMIN' && (
+                            <button className="btn btn-danger btn-sm" onClick={() => handleBanUser(u)}>추방</button>
+                          )}
+                        </td>
                       </tr>
                     ))
                   )}
