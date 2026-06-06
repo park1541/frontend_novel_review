@@ -2,18 +2,33 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getNovels } from '../api/novelApi';
 import NovelList from '../components/novel/NovelList';
+import NovelCard from '../components/novel/NovelCard';
 import Spinner from '../components/common/Spinner';
 import './Home.css';
 
 export default function Home() {
   const [novels, setNovels] = useState([]);
+  const [topRated, setTopRated] = useState([]);
+  const [mostReviewed, setMostReviewed] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [rankingLoading, setRankingLoading] = useState(true);
 
   useEffect(() => {
     getNovels({ page: 0, size: 8 })
       .then((res) => setNovels(res.data?.content ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
+
+    Promise.all([
+      getNovels({ page: 0, size: 10, sortBy: 'rating' }),
+      getNovels({ page: 0, size: 10, sortBy: 'reviews' }),
+    ])
+      .then(([ratingRes, reviewRes]) => {
+        setTopRated(ratingRes.data?.content ?? []);
+        setMostReviewed(reviewRes.data?.content ?? []);
+      })
+      .catch(() => {})
+      .finally(() => setRankingLoading(false));
   }, []);
 
   return (
@@ -32,6 +47,36 @@ export default function Home() {
         <div className="home-more">
           <Link to="/novels" className="btn btn-outline">전체 보기</Link>
         </div>
+      </section>
+
+      {/* 별점 TOP 10 */}
+      <section className="home-section container">
+        <h2 className="section-title">⭐ 별점 TOP 10</h2>
+        {rankingLoading ? <Spinner /> : (
+          <div className="ranking-grid">
+            {topRated.map((novel, index) => (
+              <div key={novel.id} className="ranking-item">
+                <span className={`ranking-badge ${index < 3 ? 'top3' : ''}`}>{index + 1}</span>
+                <NovelCard novel={novel} />
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* 리뷰 많은 소설 TOP 10 */}
+      <section className="home-section container">
+        <h2 className="section-title">📚 리뷰 많은 소설 TOP 10</h2>
+        {rankingLoading ? <Spinner /> : (
+          <div className="ranking-grid">
+            {mostReviewed.map((novel, index) => (
+              <div key={novel.id} className="ranking-item">
+                <span className={`ranking-badge ${index < 3 ? 'top3' : ''}`}>{index + 1}</span>
+                <NovelCard novel={novel} />
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

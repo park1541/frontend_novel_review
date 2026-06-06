@@ -33,7 +33,7 @@ export default function NovelListPage() {
   // page, genreId, keyword가 바뀔 때마다 소설 목록 다시 로드
   useEffect(() => {
     setLoading(true);
-    const params = { page, size: 12 };
+    const params = { page, size: 10 };
     if (genreId) params.genreId = genreId;   // 장르 필터가 있으면 파라미터에 추가
     if (keyword) params.keyword = keyword;   // 검색어가 있으면 파라미터에 추가
 

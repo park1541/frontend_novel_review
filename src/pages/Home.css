@@ -49,3 +49,49 @@
   text-align: center;
   margin-top: 32px;
 }
+
+/* 랭킹 그리드 */
+.ranking-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.ranking-item {
+  position: relative;
+}
+
+.ranking-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.ranking-badge.top3 {
+  background: #6366f1;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 900px) {
+  .ranking-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .ranking-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

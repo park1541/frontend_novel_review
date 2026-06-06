@@ -2,6 +2,23 @@
   padding: 40px 20px;
 }
 
+/* 소설 목록 페이지: 5열 × 2줄 (10개) */
+.novel-list-page .novel-list {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+@media (max-width: 900px) {
+  .novel-list-page .novel-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .novel-list-page .novel-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .page-title {
   font-size: 1.6rem;
   font-weight: 800;
