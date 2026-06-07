@@ -1,16 +1,18 @@
 import './AuthPage.css';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+
 export default function LoginPage() {
   const handleGoogle = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = `${BACKEND_URL}/oauth2/authorization/google`;
   };
 
   const handleNaver = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/naver';
+    window.location.href = `${BACKEND_URL}/oauth2/authorization/naver`;
   };
 
   const handleKakao = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
+    window.location.href = `${BACKEND_URL}/oauth2/authorization/kakao`;
   };
 
   return (

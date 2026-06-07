@@ -12,7 +12,7 @@ src/
 │   ├── axiosInstance.js   # baseURL: /api, withCredentials: true
 │   ├── authApi.js         # getMe, logout, deleteAccount
 │   ├── novelApi.js        # getNovels, getNovelById
-│   ├── reviewApi.js       # getReviews, createReview, updateReview, deleteReview, getMyReviews
+│   ├── reviewApi.js       # getReviews, createReview, updateReview, deleteReview, getMyReviews, toggleReviewLike
 │   └── genreApi.js        # getGenres, createGenre, updateGenre, deleteGenre
 ├── context/
 │   └── AuthContext.jsx    # 전역 인증 상태 (user, setUser, loading)
@@ -47,7 +47,7 @@ src/
 
 ## 주요 필드명 (백엔드 기준)
 - 소설: `averageRating`, `coverImageUrl`, `description`, `genreName`
-- 리뷰: `authorNickname`, `authorProfileImageUrl`, `novelTitle`, `novelCoverImageUrl`
+- 리뷰: `authorNickname`, `authorProfileImageUrl`, `novelTitle`, `novelCoverImageUrl`, `likeCount`, `liked`
 - 탈퇴 회원 리뷰: `authorNickname = "탈퇴된 회원"`, `authorProfileImageUrl = null`
 
 ## 관리자 페이지 구조
@@ -65,6 +65,21 @@ src/
 - `axiosInstance.delete('/admin/users/${id}')` → DELETE /api/admin/users/{id}
 - 성공 시: 회원 목록 새로고침
 - 해당 회원의 리뷰까지 전부 삭제됨
+
+## 리뷰 좋아요 (ReviewCard.jsx)
+- `toggleReviewLike(reviewId)` → POST /api/reviews/{reviewId}/likes
+- 응답: `{ liked, likeCount }`
+- ♡(비로그인/미좋아요) ↔ ♥(좋아요) 토글
+- 비로그인 클릭 시 alert('로그인이 필요합니다.')
+
+## 홈 랭킹 섹션 (Home.jsx)
+- ⭐ 별점 TOP 10: `getNovels({ sortBy: 'rating', size: 10, page: 0 })`
+- 📚 리뷰 많은 소설 TOP 10: `getNovels({ sortBy: 'reviews', size: 10, page: 0 })`
+- 5열 × 2줄 그리드, 순위 뱃지 표시 (1~3등 보라색)
+- sortBy 정렬: latest(기본) / rating(평점→리뷰수→최신) / reviews(리뷰수→평점→최신)
+
+## 소설 목록 페이지 (NovelListPage.jsx)
+- 페이지당 10개 (5열 × 2줄)
 
 ## 개발 서버 실행
 ```bash

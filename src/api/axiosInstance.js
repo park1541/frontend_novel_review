@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-// axios 공통 인스턴스 생성
-// baseURL: 모든 요청 앞에 '/api'가 자동으로 붙음
-// withCredentials: 로그인 쿠키(JWT)를 요청마다 자동으로 포함시킴
+// 배포 환경: VITE_API_URL 환경변수 사용 (예: https://xxx.railway.app/api)
+// 개발 환경: Vite 프록시 사용 (/api → http://localhost:8080)
 const axiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   withCredentials: true,
 });
 
