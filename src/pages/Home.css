@@ -1,7 +1,7 @@
 .hero {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: #fff;
-  padding: 80px 0;
+  padding: 100px 0;
   text-align: center;
 }
 
@@ -13,41 +13,53 @@
 }
 
 .hero-title {
-  font-size: 2.2rem;
+  font-size: 2.6rem;
   font-weight: 800;
   line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
 .hero-sub {
-  font-size: 1.05rem;
-  opacity: 0.9;
+  font-size: 1.1rem;
+  opacity: 0.85;
+  max-width: 480px;
 }
 
 .hero-btn {
-  margin-top: 8px;
+  margin-top: 12px;
   background: #fff;
   color: var(--color-primary);
   font-size: 1rem;
-  padding: 12px 28px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: background 0.15s, transform 0.15s;
 }
 
 .hero-btn:hover {
   background: #f1f0ff;
+  transform: translateY(-2px);
 }
 
 .home-section {
-  padding: 48px 20px;
+  padding: 56px 20px;
+}
+
+.home-section + .home-section {
+  border-top: 1px solid var(--color-border);
 }
 
 .section-title {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 800;
   margin-bottom: 24px;
+  color: var(--color-text);
 }
 
 .home-more {
   text-align: center;
-  margin-top: 32px;
+  margin-top: 36px;
 }
 
 /* 랭킹 그리드 */
@@ -66,31 +78,44 @@
   top: 8px;
   left: 8px;
   z-index: 1;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .ranking-badge.top3 {
   background: #6366f1;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
+  width: 30px;
+  height: 30px;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
 }
 
 @media (max-width: 900px) {
+  .hero-title {
+    font-size: 2rem;
+  }
   .ranking-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 600px) {
+  .hero {
+    padding: 60px 0;
+  }
+  .hero-title {
+    font-size: 1.6rem;
+  }
   .ranking-grid {
     grid-template-columns: repeat(2, 1fr);
   }

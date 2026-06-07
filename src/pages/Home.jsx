@@ -14,7 +14,7 @@ export default function Home() {
   const [rankingLoading, setRankingLoading] = useState(true);
 
   useEffect(() => {
-    getNovels({ page: 0, size: 8 })
+    getNovels({ page: 0, size: 10 })
       .then((res) => setNovels(res.data?.content ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -44,9 +44,6 @@ export default function Home() {
       <section className="home-section container">
         <h2 className="section-title">최근 등록 소설</h2>
         {loading ? <Spinner /> : <NovelList novels={novels} />}
-        <div className="home-more">
-          <Link to="/novels" className="btn btn-outline">전체 보기</Link>
-        </div>
       </section>
 
       {/* 별점 TOP 10 */}
