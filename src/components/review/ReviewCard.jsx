@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { toggleReviewLike } from '../../api/reviewApi';
 import StarRating from './StarRating';
+import ReportModal from './ReportModal';
 import './ReviewCard.css';
 
 // 리뷰 한 개를 표시하는 카드 컴포넌트
@@ -12,6 +13,7 @@ export default function ReviewCard({ review, onDelete, onEdit }) {
 
   const [liked, setLiked] = useState(review.liked ?? false);
   const [likeCount, setLikeCount] = useState(review.likeCount ?? 0);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   // 현재 로그인한 사용자가 이 리뷰의 작성자인지 확인
   const isOwner = user && user.id === review.userId;
@@ -41,6 +43,7 @@ export default function ReviewCard({ review, onDelete, onEdit }) {
       <div className="review-card-header">
         <div>
           <span className="review-card-nickname">{review.authorNickname}</span>
+          {review.userId && <span className="review-card-user-id">(#{review.userId})</span>}
           <span className="review-card-date">{formatDate(review.createdAt)}</span>
         </div>
         {/* 별점은 조회 전용 (readonly) */}
@@ -59,15 +62,33 @@ export default function ReviewCard({ review, onDelete, onEdit }) {
           {liked ? '♥' : '♡'} <span className="review-like-count">{likeCount}</span>
         </button>
 
-        {/* 본인 또는 관리자에게만 수정/삭제 버튼 표시 */}
-        {(isOwner || isAdmin) && (
-          <div className="review-card-actions">
-            {/* 수정 버튼은 본인에게만 표시 (관리자는 삭제만 가능) */}
-            {isOwner && <button className="btn btn-outline btn-sm" onClick={() => onEdit(review)}>수정</button>}
-            <button className="btn btn-danger btn-sm" onClick={() => onDelete(review.id)}>삭제</button>
-          </div>
-        )}
+        <div className="review-card-actions">
+          {/* 신고 버튼: 본인 리뷰가 아닌 경우에만 표시 */}
+          {!isOwner && (
+            <button
+              className="btn btn-report btn-sm"
+              onClick={() => {
+                if (!user) { alert('로그인이 필요합니다.'); return; }
+                setShowReportModal(true);
+              }}
+              title="신고하기"
+            >
+              🚨 신고
+            </button>
+          )}
+          {/* 본인 또는 관리자에게만 수정/삭제 버튼 표시 */}
+          {(isOwner || isAdmin) && (
+            <>
+              {isOwner && <button className="btn btn-outline btn-sm" onClick={() => onEdit(review)}>수정</button>}
+              <button className="btn btn-danger btn-sm" onClick={() => onDelete(review.id)}>삭제</button>
+            </>
+          )}
+        </div>
       </div>
+
+      {showReportModal && (
+        <ReportModal reviewId={review.id} onClose={() => setShowReportModal(false)} />
+      )}
     </div>
   );
 }

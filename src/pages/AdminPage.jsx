@@ -2,17 +2,20 @@ import { useEffect, useState } from 'react';
 import { getNovels } from '../api/novelApi';
 import axiosInstance from '../api/axiosInstance';
 import { getGenres, createGenre, updateGenre, deleteGenre } from '../api/genreApi';
+import { getReviewReports, dismissReport, deleteReviewByReport } from '../api/reviewApi';
 import Spinner from '../components/common/Spinner';
 import './AdminPage.css';
+import '../components/review/ReportModal.css';
 
 const EMPTY_FORM = { title: '', author: '', genreId: '', description: '', coverImageUrl: '' };
 
 // 사이드바 메뉴 목록 - 추가할 때 여기에만 넣으면 됨
 const MENU_ITEMS = [
-  { key: 'users',  label: '회원 목록' },
-  { key: 'genres', label: '장르 관리' },
-  { key: 'manage', label: '소설 관리' },
-  { key: 'list',   label: '소설 목록' },
+  { key: 'users',   label: '회원 목록' },
+  { key: 'genres',  label: '장르 관리' },
+  { key: 'manage',  label: '소설 관리' },
+  { key: 'list',    label: '소설 목록' },
+  { key: 'reports', label: '리뷰 신고' },
 ];
 
 export default function AdminPage() {
@@ -30,6 +33,11 @@ export default function AdminPage() {
   const [genreInput, setGenreInput] = useState('');
   const [genreEditingId, setGenreEditingId] = useState(null);
   const [genreError, setGenreError] = useState('');
+
+  // 리뷰 신고 상태
+  const [reports, setReports] = useState([]);
+  const [reportsLoading, setReportsLoading] = useState(false);
+  const [expandedContent, setExpandedContent] = useState(null); // 전체 내용 보기
 
   const fetchNovels = () => {
     setLoading(true);
@@ -57,11 +65,40 @@ export default function AdminPage() {
     }
   };
 
+  const fetchReports = () => {
+    setReportsLoading(true);
+    getReviewReports({ page: 0, size: 50 })
+      .then((res) => setReports(res.data?.content ?? []))
+      .catch(() => {})
+      .finally(() => setReportsLoading(false));
+  };
+
   useEffect(() => {
     fetchNovels();
     fetchUsers();
     getGenres().then((res) => setGenres(res.data ?? [])).catch(() => {});
+    fetchReports();
   }, []);
+
+  const handleDismissReport = async (reportId) => {
+    if (!window.confirm('이 신고를 거절하시겠습니까?')) return;
+    try {
+      await dismissReport(reportId);
+      fetchReports();
+    } catch {
+      alert('처리 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleDeleteReviewByReport = async (reportId, reviewId) => {
+    if (!window.confirm('해당 리뷰를 삭제하시겠습니까?\n리뷰 삭제 시 관련 신고도 모두 사라집니다.')) return;
+    try {
+      await deleteReviewByReport(reportId, reviewId);
+      fetchReports();
+    } catch {
+      alert('처리 중 오류가 발생했습니다.');
+    }
+  };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -355,6 +392,82 @@ export default function AdminPage() {
                   )}
                 </tbody>
               </table>
+            )}
+          </div>
+        )}
+
+        {/* 리뷰 신고 */}
+        {activeMenu === 'reports' && (
+          <div>
+            <h1 className="admin-content-title">리뷰 신고 목록</h1>
+            {reportsLoading ? <Spinner /> : (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>신고자</th>
+                    <th>신고 이유</th>
+                    <th>리뷰 내용</th>
+                    <th>신고 날짜</th>
+                    <th>처리</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reports.length === 0 ? (
+                    <tr><td colSpan={5} className="admin-table-empty">신고된 리뷰가 없습니다.</td></tr>
+                  ) : (
+                    reports.map((r) => (
+                      <tr key={r.id}>
+                        <td>
+                          {r.reporterNickname ?? '탈퇴된 회원'}
+                          {r.reporterId && <span className="admin-report-id"> (#{r.reporterId})</span>}
+                        </td>
+                        <td>{r.reason}</td>
+                        <td>
+                          <span
+                            className="admin-report-content"
+                            onClick={() => setExpandedContent(r.reviewContent)}
+                            title="클릭하면 전체 내용 보기"
+                          >
+                            {r.reviewContent
+                              ? (r.reviewContent.length > 50
+                                  ? r.reviewContent.slice(0, 50) + '...'
+                                  : r.reviewContent)
+                              : '(삭제된 리뷰)'}
+                          </span>
+                        </td>
+                        <td>{formatDate(r.createdAt)}</td>
+                        <td className="admin-table-actions">
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleDeleteReviewByReport(r.id, r.reviewId)}
+                          >
+                            리뷰 삭제
+                          </button>
+                          <button
+                            className="btn btn-outline btn-sm"
+                            onClick={() => handleDismissReport(r.id)}
+                          >
+                            거절
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
+
+            {/* 리뷰 전체 내용 모달 */}
+            {expandedContent && (
+              <div className="modal-overlay" onClick={() => setExpandedContent(null)}>
+                <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                  <h3 style={{ marginBottom: 12, fontSize: '1rem', fontWeight: 700 }}>리뷰 전체 내용</h3>
+                  <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.93rem' }}>{expandedContent}</p>
+                  <div style={{ marginTop: 20, textAlign: 'right' }}>
+                    <button className="btn btn-outline btn-sm" onClick={() => setExpandedContent(null)}>닫기</button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         )}

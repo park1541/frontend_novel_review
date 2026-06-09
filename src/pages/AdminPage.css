@@ -201,6 +201,22 @@
   border-color: #a4c2f4;
 }
 
+/* ── 리뷰 신고 ── */
+.admin-report-content {
+  cursor: pointer;
+  color: var(--color-text);
+  text-decoration: underline dotted;
+}
+
+.admin-report-content:hover {
+  color: var(--color-primary);
+}
+
+.admin-report-id {
+  font-size: 0.8rem;
+  color: var(--color-text-sub);
+}
+
 /* ── 반응형 ── */
 @media (max-width: 768px) {
   .admin-layout {

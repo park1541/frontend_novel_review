@@ -17,3 +17,16 @@ export const getMyReviews = () => axiosInstance.get('/users/me/reviews');
 
 // 리뷰 좋아요 토글 (로그인 필요 / liked, likeCount 반환)
 export const toggleReviewLike = (reviewId) => axiosInstance.post(`/reviews/${reviewId}/likes`);
+
+// 리뷰 신고 (로그인 필요 / reason 전송)
+export const reportReview = (reviewId, reason) => axiosInstance.post(`/reviews/${reviewId}/reports`, { reason });
+
+// [관리자] 신고 목록 조회
+export const getReviewReports = (params) => axiosInstance.get('/admin/review-reports', { params });
+
+// [관리자] 신고 거절 (신고만 삭제)
+export const dismissReport = (reportId) => axiosInstance.delete(`/admin/review-reports/${reportId}`);
+
+// [관리자] 신고 처리 (리뷰까지 삭제)
+export const deleteReviewByReport = (reportId, reviewId) =>
+  axiosInstance.delete(`/admin/review-reports/${reportId}/delete-review/${reviewId}`);
