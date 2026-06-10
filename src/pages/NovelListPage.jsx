@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getNovels } from '../api/novelApi';
 import { getGenres } from '../api/genreApi';
+import { logSearch } from '../api/searchApi';
 import NovelList from '../components/novel/NovelList';
+import PopularSearches from '../components/novel/PopularSearches';
 import Pagination from '../components/common/Pagination';
 import Spinner from '../components/common/Spinner';
 import './NovelListPage.css';
@@ -30,6 +32,9 @@ export default function NovelListPage() {
       .catch(() => {});
   }, []);
 
+  // 같은 검색어를 중복 기록하지 않기 위한 ref (페이지 이동 시 재기록 방지)
+  const loggedKeyword = useRef(null);
+
   // page, genreId, keyword가 바뀔 때마다 소설 목록 다시 로드
   useEffect(() => {
     setLoading(true);
@@ -40,8 +45,15 @@ export default function NovelListPage() {
     getNovels(params)
       .then((res) => {
         const data = res.data;
-        setNovels(data?.content ?? []);      // 소설 배열
+        const content = data?.content ?? [];
+        setNovels(content);                   // 소설 배열
         setTotalPages(data?.totalPages ?? 0); // 전체 페이지 수
+
+        // 검색 결과가 있을 때만 검색어 기록 (오타 등 결과 없는 검색은 누적 안 함)
+        if (keyword && content.length > 0 && loggedKeyword.current !== keyword) {
+          loggedKeyword.current = keyword;
+          logSearch(keyword).catch(() => {});
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -56,19 +68,39 @@ export default function NovelListPage() {
     setSearchParams(next);
   };
 
-  // 검색 폼 제출 처리
+  // 검색 폼 제출 처리 (검색어 기록은 결과 확인 후 useEffect에서 처리)
   const handleSearch = (e) => {
     e.preventDefault();
     const kw = e.target.keyword.value.trim();
     setParam('keyword', kw);
   };
 
+  // 인기 검색어 클릭 → 해당 키워드로 검색
+  const handlePopularSelect = (kw) => {
+    setParam('keyword', kw);
+  };
+
   return (
     <div className="container novel-list-page">
-      <h1 className="page-title">소설 목록</h1>
+      {/* 제목 + 검색 영역 (한 줄) */}
+      <div className="page-title-row">
+        <h1 className="page-title">소설 목록</h1>
+        <div className="search-area">
+          <PopularSearches onSelect={handlePopularSelect} />
+          <form className="search-form" onSubmit={handleSearch}>
+            <input
+              name="keyword"
+              className="search-input"
+              placeholder="제목 또는 작가 검색"
+              defaultValue={keyword}
+            />
+            <button type="submit" className="btn btn-primary">검색</button>
+          </form>
+        </div>
+      </div>
 
+      {/* 장르 필터 버튼 그룹 (한 줄 전체 사용) */}
       <div className="novel-list-filters">
-        {/* 장르 필터 버튼 그룹 */}
         <div className="genre-filter">
           {/* '전체' 버튼: genreId를 비워서 필터 해제 */}
           <button
@@ -88,17 +120,6 @@ export default function NovelListPage() {
             </button>
           ))}
         </div>
-
-        {/* 키워드 검색 폼 */}
-        <form className="search-form" onSubmit={handleSearch}>
-          <input
-            name="keyword"
-            className="search-input"
-            placeholder="제목 또는 작가 검색"
-            defaultValue={keyword}
-          />
-          <button type="submit" className="btn btn-primary">검색</button>
-        </form>
       </div>
 
       {/* 로딩 중이면 스피너, 완료되면 목록 + 페이지네이션 */}

@@ -19,17 +19,21 @@
   }
 }
 
-.page-title {
-  font-size: 1.6rem;
-  font-weight: 800;
+.page-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
   margin-bottom: 24px;
 }
 
+.page-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
 .novel-list-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
   margin-bottom: 28px;
 }
 
@@ -60,6 +64,12 @@
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: #fff;
+}
+
+.search-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .search-form {
