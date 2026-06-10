@@ -3,6 +3,7 @@ import { getNovels } from '../api/novelApi';
 import axiosInstance from '../api/axiosInstance';
 import { getGenres, createGenre, updateGenre, deleteGenre } from '../api/genreApi';
 import { getReviewReports, dismissReport, deleteReviewByReport } from '../api/reviewApi';
+import { getAdminInquiries, answerInquiry, deleteAdminInquiry } from '../api/inquiryApi';
 import Spinner from '../components/common/Spinner';
 import './AdminPage.css';
 import '../components/review/ReportModal.css';
@@ -11,11 +12,12 @@ const EMPTY_FORM = { title: '', author: '', genreId: '', description: '', coverI
 
 // 사이드바 메뉴 목록 - 추가할 때 여기에만 넣으면 됨
 const MENU_ITEMS = [
-  { key: 'users',   label: '회원 목록' },
-  { key: 'genres',  label: '장르 관리' },
-  { key: 'manage',  label: '소설 관리' },
-  { key: 'list',    label: '소설 목록' },
-  { key: 'reports', label: '리뷰 신고' },
+  { key: 'users',     label: '회원 목록' },
+  { key: 'genres',    label: '장르 관리' },
+  { key: 'manage',    label: '소설 관리' },
+  { key: 'list',      label: '소설 목록' },
+  { key: 'reports',   label: '리뷰 신고' },
+  { key: 'inquiries', label: '1:1 문의' },
 ];
 
 export default function AdminPage() {
@@ -38,6 +40,12 @@ export default function AdminPage() {
   const [reports, setReports] = useState([]);
   const [reportsLoading, setReportsLoading] = useState(false);
   const [expandedContent, setExpandedContent] = useState(null); // 전체 내용 보기
+
+  // 1:1 문의 상태
+  const [inquiries, setInquiries] = useState([]);
+  const [inquiriesLoading, setInquiriesLoading] = useState(false);
+  const [answeringInquiry, setAnsweringInquiry] = useState(null); // 답변 작성 중인 문의
+  const [answerText, setAnswerText] = useState('');
 
   const fetchNovels = () => {
     setLoading(true);
@@ -73,12 +81,52 @@ export default function AdminPage() {
       .finally(() => setReportsLoading(false));
   };
 
+  const fetchInquiries = () => {
+    setInquiriesLoading(true);
+    getAdminInquiries({ page: 0, size: 50 })
+      .then((res) => setInquiries(res.data?.content ?? []))
+      .catch(() => {})
+      .finally(() => setInquiriesLoading(false));
+  };
+
   useEffect(() => {
     fetchNovels();
     fetchUsers();
     getGenres().then((res) => setGenres(res.data ?? [])).catch(() => {});
     fetchReports();
+    fetchInquiries();
   }, []);
+
+  // 답변 모달 열기 (기존 답변 있으면 수정 모드)
+  const openAnswerModal = (inquiry) => {
+    setAnsweringInquiry(inquiry);
+    setAnswerText(inquiry.answer ?? '');
+  };
+
+  const handleDeleteInquiry = async (inq) => {
+    if (!window.confirm(`"${inq.title}" 문의를 삭제하시겠습니까?`)) return;
+    try {
+      await deleteAdminInquiry(inq.id);
+      fetchInquiries();
+    } catch {
+      alert('삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleAnswerSubmit = async () => {
+    if (!answerText.trim()) {
+      alert('답변 내용을 입력해주세요.');
+      return;
+    }
+    try {
+      await answerInquiry(answeringInquiry.id, answerText.trim());
+      setAnsweringInquiry(null);
+      setAnswerText('');
+      fetchInquiries();
+    } catch {
+      alert('답변 등록 중 오류가 발생했습니다.');
+    }
+  };
 
   const handleDismissReport = async (reportId) => {
     if (!window.confirm('이 신고를 거절하시겠습니까?')) return;
@@ -465,6 +513,99 @@ export default function AdminPage() {
                   <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.93rem' }}>{expandedContent}</p>
                   <div style={{ marginTop: 20, textAlign: 'right' }}>
                     <button className="btn btn-outline btn-sm" onClick={() => setExpandedContent(null)}>닫기</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 1:1 문의 */}
+        {activeMenu === 'inquiries' && (
+          <div>
+            <h1 className="admin-content-title">1:1 문의 목록</h1>
+            {inquiriesLoading ? <Spinner /> : (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>유형</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>상태</th>
+                    <th>날짜</th>
+                    <th>관리</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inquiries.length === 0 ? (
+                    <tr><td colSpan={6} className="admin-table-empty">등록된 문의가 없습니다.</td></tr>
+                  ) : (
+                    inquiries.map((inq) => (
+                      <tr key={inq.id}>
+                        <td>{inq.category}</td>
+                        <td>{inq.title}</td>
+                        <td>
+                          {inq.userNickname ?? '탈퇴된 회원'}
+                          {inq.userId && <span className="admin-report-id"> (#{inq.userId})</span>}
+                        </td>
+                        <td>
+                          <span className={`admin-role-badge ${inq.answer ? 'admin' : ''}`}>
+                            {inq.answer ? '답변 완료' : '답변 대기'}
+                          </span>
+                        </td>
+                        <td>{formatDate(inq.createdAt)}</td>
+                        <td className="admin-table-actions">
+                          <button
+                            className={`btn btn-sm ${inq.answer ? 'btn-outline' : 'btn-primary'}`}
+                            onClick={() => openAnswerModal(inq)}
+                          >
+                            {inq.answer ? '답변 수정' : '답변 작성'}
+                          </button>
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleDeleteInquiry(inq)}
+                          >
+                            삭제
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
+
+            {/* 답변 작성 모달 */}
+            {answeringInquiry && (
+              <div className="modal-overlay" onClick={() => setAnsweringInquiry(null)}>
+                <div className="modal-box" style={{ maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
+                  <h3 style={{ marginBottom: 4, fontSize: '1rem', fontWeight: 700 }}>
+                    [{answeringInquiry.category}] {answeringInquiry.title}
+                  </h3>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--color-text-sub)', marginBottom: 12 }}>
+                    {answeringInquiry.userNickname} (#{answeringInquiry.userId})
+                  </p>
+                  <p style={{
+                    whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.92rem',
+                    background: '#fafafa', padding: '12px 14px', borderRadius: 8, marginBottom: 16,
+                  }}>
+                    {answeringInquiry.content}
+                  </p>
+                  <textarea
+                    value={answerText}
+                    onChange={(e) => setAnswerText(e.target.value)}
+                    placeholder="답변 내용을 입력하세요"
+                    rows={5}
+                    style={{
+                      width: '100%', padding: '10px 14px', fontFamily: 'inherit', fontSize: '0.9rem',
+                      border: '1.5px solid var(--color-border)', borderRadius: 8, resize: 'vertical',
+                    }}
+                  />
+                  <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                    <button className="btn btn-outline btn-sm" onClick={() => setAnsweringInquiry(null)}>취소</button>
+                    <button className="btn btn-primary btn-sm" onClick={handleAnswerSubmit}>
+                      {answeringInquiry.answer ? '수정 완료' : '답변 등록'}
+                    </button>
                   </div>
                 </div>
               </div>

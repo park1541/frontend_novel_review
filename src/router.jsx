@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import NovelListPage from './pages/NovelListPage';
 import NovelDetailPage from './pages/NovelDetailPage';
 import RankingPage from './pages/RankingPage';
+import InquiryPage from './pages/InquiryPage';
 import LoginPage from './pages/LoginPage';
 import MyPage from './pages/MyPage';
 import AdminPage from './pages/AdminPage';
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: 'mypage',
         element: <ProtectedRoute><MyPage /></ProtectedRoute>,
+      },
+      {
+        path: 'inquiries',
+        element: <ProtectedRoute><InquiryPage /></ProtectedRoute>,
       },
       {
         path: 'admin',

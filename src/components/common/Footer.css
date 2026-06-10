@@ -5,5 +5,20 @@
   border-top: 1px solid var(--color-border);
   color: var(--color-text-sub);
   font-size: 0.85rem;
-  text-align: center;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-link {
+  color: var(--color-text-sub);
+  text-decoration: underline;
+}
+
+.footer-link:hover {
+  color: var(--color-primary);
 }

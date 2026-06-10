@@ -56,13 +56,18 @@ export default function MyPage() {
             <span className="mypage-role">{user?.role === 'ADMIN' ? '관리자' : '일반 회원'}</span>
           </div>
         </div>
-        <button
-          className="btn btn-withdraw"
-          onClick={handleWithdraw}
-          disabled={withdrawing}
-        >
-          {withdrawing ? '처리 중...' : '회원 탈퇴'}
-        </button>
+        <div className="mypage-profile-actions">
+          <button className="btn btn-outline" onClick={() => navigate('/inquiries')}>
+            1:1 문의
+          </button>
+          <button
+            className="btn btn-withdraw"
+            onClick={handleWithdraw}
+            disabled={withdrawing}
+          >
+            {withdrawing ? '처리 중...' : '회원 탈퇴'}
+          </button>
+        </div>
       </div>
 
       <h2 className="section-title">내 리뷰 목록</h2>
