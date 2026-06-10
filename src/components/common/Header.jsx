@@ -23,6 +23,7 @@ export default function Header() {
         <nav className="header-nav">
           <Link to="/">홈</Link>
           <Link to="/novels">소설 목록</Link>
+          <Link to="/rankings">랭킹</Link>
         </nav>
 
         <div className="header-auth">

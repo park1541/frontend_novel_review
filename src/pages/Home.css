@@ -62,50 +62,9 @@
   margin-top: 36px;
 }
 
-/* 랭킹 그리드 */
-.ranking-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
-}
-
-.ranking-item {
-  position: relative;
-}
-
-.ranking-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 1;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  font-size: 0.8rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.ranking-badge.top3 {
-  background: #6366f1;
-  font-size: 0.85rem;
-  width: 30px;
-  height: 30px;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
-}
-
 @media (max-width: 900px) {
   .hero-title {
     font-size: 2rem;
-  }
-  .ranking-grid {
-    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -115,8 +74,5 @@
   }
   .hero-title {
     font-size: 1.6rem;
-  }
-  .ranking-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }

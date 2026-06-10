@@ -3,6 +3,7 @@ import App from './App';
 import Home from './pages/Home';
 import NovelListPage from './pages/NovelListPage';
 import NovelDetailPage from './pages/NovelDetailPage';
+import RankingPage from './pages/RankingPage';
 import LoginPage from './pages/LoginPage';
 import MyPage from './pages/MyPage';
 import AdminPage from './pages/AdminPage';
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'novels', element: <NovelListPage /> },
       { path: 'novels/:id', element: <NovelDetailPage /> },
+      { path: 'rankings', element: <RankingPage /> },
       { path: 'login', element: <LoginPage /> },
       {
         path: 'mypage',

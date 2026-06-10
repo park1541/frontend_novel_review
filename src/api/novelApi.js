@@ -5,3 +5,6 @@ export const getNovels = (params) => axiosInstance.get('/novels', { params });
 
 // 특정 소설 상세 조회 (id로 단건 조회)
 export const getNovelById = (id) => axiosInstance.get(`/novels/${id}`);
+
+// 랭킹 조회 (type: rating/reviews, period: all/daily/weekly/monthly, genreId 선택)
+export const getNovelRankings = (params) => axiosInstance.get('/novels/rankings', { params });
