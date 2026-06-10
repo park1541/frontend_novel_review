@@ -18,11 +18,13 @@
 
 - **소셜 로그인**: Google / Naver / Kakao 로그인 (OAuth2)
 - **소설 목록**: 장르 필터, 키워드 검색, 페이지네이션 (5열 × 2줄)
+- **인기 검색어**: 검색창 옆 TOP 5 롤링 슬라이드 (3초 순환, 호버 시 전체 드롭다운)
 - **소설 상세**: 표지 이미지, 평균 별점, 리뷰 목록
-- **리뷰**: 작성 / 수정 / 삭제 / 좋아요 토글 (♡ ↔ ♥)
-- **랭킹**: 홈 화면에 ⭐ 별점 TOP 10 / 📚 리뷰 많은 소설 TOP 10
-- **마이페이지**: 내 리뷰 목록, 회원 탈퇴
-- **관리자**: 회원 관리, 장르 관리, 소설 관리 (ADMIN 권한)
+- **리뷰**: 작성 / 수정 / 삭제 / 좋아요 토글 (♡ ↔ ♥) / 신고 (이유 선택 모달)
+- **랭킹 페이지**: 별점·리뷰수 TOP 10 — 기간(전체/일간/주간/월간) + 장르 필터 탭
+- **1:1 문의**: 문의 작성 + 내 문의 내역 (답변 대기/완료 상태, 아코디언)
+- **마이페이지**: 내 리뷰 목록, 1:1 문의 진입, 회원 탈퇴
+- **관리자**: 회원/장르/소설 관리, 리뷰 신고 처리, 문의 답변·삭제 (ADMIN 권한)
 
 ## 프로젝트 구조
 
@@ -31,22 +33,26 @@ src/
 ├── api/
 │   ├── axiosInstance.js   # Axios 기본 설정 (baseURL, withCredentials)
 │   ├── authApi.js         # 인증 관련 API
-│   ├── novelApi.js        # 소설 관련 API
-│   ├── reviewApi.js       # 리뷰 관련 API
-│   └── genreApi.js        # 장르 관련 API
+│   ├── novelApi.js        # 소설 + 랭킹 API
+│   ├── reviewApi.js       # 리뷰 + 좋아요 + 신고 API
+│   ├── genreApi.js        # 장르 관련 API
+│   ├── searchApi.js       # 검색어 로깅 + 인기 검색어 API
+│   └── inquiryApi.js      # 1:1 문의 API
 ├── context/
 │   └── AuthContext.jsx    # 전역 인증 상태 관리
 ├── components/
 │   ├── common/            # Header, Footer, Pagination, Spinner, ProtectedRoute
-│   ├── novel/             # NovelCard, NovelList
-│   └── review/            # ReviewCard, ReviewList, ReviewForm, StarRating
+│   ├── novel/             # NovelCard, NovelList, PopularSearches
+│   └── review/            # ReviewCard, ReviewList, ReviewForm, StarRating, ReportModal
 └── pages/
-    ├── Home.jsx            # 최근 소설 + 랭킹 섹션
+    ├── Home.jsx            # 최근 등록 소설
     ├── LoginPage.jsx       # 소셜 로그인 버튼
-    ├── NovelListPage.jsx   # 소설 목록 (검색/필터)
+    ├── NovelListPage.jsx   # 소설 목록 (검색/필터/인기 검색어)
     ├── NovelDetailPage.jsx # 소설 상세 + 리뷰
+    ├── RankingPage.jsx     # 랭킹 (기준/기간/장르 탭)
+    ├── InquiryPage.jsx     # 1:1 문의 작성 + 내 문의 내역
     ├── MyPage.jsx          # 마이페이지
-    ├── AdminPage.jsx       # 관리자 페이지
+    ├── AdminPage.jsx       # 관리자 페이지 (사이드바 탭)
     └── NotFoundPage.jsx
 ```
 
