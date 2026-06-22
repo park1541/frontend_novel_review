@@ -473,7 +473,7 @@ export default function AdminPage() {
                         <td>
                           <span
                             className="admin-report-content"
-                            onClick={() => setExpandedContent(r.reviewContent)}
+                            onClick={() => setExpandedContent(r)}
                             title="클릭하면 전체 내용 보기"
                           >
                             {r.reviewContent
@@ -509,8 +509,25 @@ export default function AdminPage() {
             {expandedContent && (
               <div className="modal-overlay" onClick={() => setExpandedContent(null)}>
                 <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                  <h3 style={{ marginBottom: 12, fontSize: '1rem', fontWeight: 700 }}>리뷰 전체 내용</h3>
-                  <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.93rem' }}>{expandedContent}</p>
+                  <h3 style={{ marginBottom: 4, fontSize: '1rem', fontWeight: 700 }}>신고된 리뷰</h3>
+                  <div style={{ marginBottom: 12, fontSize: '0.85rem', color: '#666' }}>
+                    소설:{' '}
+                    {expandedContent.novelId ? (
+                      <a
+                        href={`/novels/${expandedContent.novelId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: 'var(--primary, #7F77DD)', fontWeight: 600 }}
+                      >
+                        {expandedContent.novelTitle ?? '(제목 없음)'}
+                      </a>
+                    ) : (
+                      <span>(삭제된 소설)</span>
+                    )}
+                  </div>
+                  <p style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.93rem' }}>
+                    {expandedContent.reviewContent ?? '(삭제된 리뷰)'}
+                  </p>
                   <div style={{ marginTop: 20, textAlign: 'right' }}>
                     <button className="btn btn-outline btn-sm" onClick={() => setExpandedContent(null)}>닫기</button>
                   </div>
