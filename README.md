@@ -7,6 +7,8 @@ Google / Naver / Kakao 소셜 로그인으로 바로 사용할 수 있습니다.
 
 **[https://frontend-novel-review.vercel.app/](https://frontend-novel-review.vercel.app/)**
 
+> ⏳ 백엔드가 무료 플랜(Render)이라 일정 시간 미사용 시 서버가 잠듭니다. **첫 접속 시 소설 목록이 뜨기까지 30초~1분** 정도 걸릴 수 있어요 (콜드 스타트). 잠시 기다리면 정상 동작합니다.
+
 ## 기술 스택
 
 | 분류 | 기술 |
